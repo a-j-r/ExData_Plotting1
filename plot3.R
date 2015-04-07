@@ -1,4 +1,7 @@
+# clean unnecessary data
 rm(list = ls())
+
+# read and clean data if necessary (no cleand hpc.rds-file exists)
 if (!file.exists("hpc.rds")) {
   household_power_consumption <- read.csv("household_power_consumption.txt",sep=";", quote = "\"", header=TRUE, colClasses=c("character", "character", rep("numeric",7)), na.strings=c("?") )
   household_power_consumption[[1]] <- as.Date(household_power_consumption[[1]], "%d/%m/%Y")
@@ -9,9 +12,14 @@ if (!file.exists("hpc.rds")) {
   saveRDS(household_power_consumption, file = "hpc.rds")
   rm(list = ls())
 }
+
+# set local to english to display english week days.
 Sys.setlocale("LC_TIME", "English")
+
+# load cleaned data.
 hpc <- readRDS("hpc.rds")
 
+# plot the data into plot3.png.
 png("plot3.png", width=480, height=480)
 plot(hpc$Time, hpc$Sub_metering_1, type="l", xlab="", ylab="Energy sub metering")
 lines(hpc$Time,hpc$Sub_metering_2, col="red")
